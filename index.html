@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kuis Matematika Interaktif</title>
     
-    <!-- Google Fonts untuk desain profesional -->
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Konfigurasi dan Script MathJax untuk merender LaTeX -->
+    <!-- Konfigurasi MathJax -->
     <script>
         MathJax = {
             tex: {
@@ -47,6 +47,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            box-sizing: border-box;
         }
 
         .quiz-container {
@@ -55,7 +56,7 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
             width: 100%;
             max-width: 700px;
-            padding: 40px;
+            padding: 40px; /* Padding default untuk layar besar */
             box-sizing: border-box;
         }
 
@@ -66,6 +67,7 @@
             margin-bottom: 24px;
             padding-bottom: 16px;
             border-bottom: 2px solid var(--border);
+            gap: 15px; /* Jarak jika elemen melipat */
         }
 
         .question-number {
@@ -84,12 +86,15 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            transition: all 0.3s ease;
         }
 
         .question-text {
             font-size: 1.1rem;
             line-height: 1.6;
             margin-bottom: 24px;
+            overflow-x: auto; /* Memungkinkan scroll horizontal jika rumus terlalu panjang */
+            padding-bottom: 10px; /* Jarak untuk scrollbar */
         }
 
         .options-container {
@@ -111,6 +116,7 @@
             transition: all 0.2s;
             display: flex;
             align-items: center;
+            overflow-x: auto; /* Mencegah rumus memecah tombol di HP */
         }
 
         .option-btn:hover {
@@ -140,6 +146,7 @@
             border-radius: 8px;
             cursor: pointer;
             transition: background 0.2s;
+            width: auto;
         }
 
         .next-btn:hover {
@@ -163,16 +170,42 @@
             margin: 20px 0;
         }
 
-        /* Screen reader only for MathJax accessibility */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            border: 0;
+        /* ==== MEDIA QUERIES UNTUK SMARTPHONE ==== */
+        @media (max-width: 600px) {
+            body {
+                padding: 15px; /* Kurangi margin luar body */
+                align-items: flex-start; /* Agar kuis mulai dari atas di layar kecil */
+                padding-top: 30px;
+            }
+
+            .quiz-container {
+                padding: 20px; /* Kurangi padding dalam kotak kuis */
+            }
+
+            .header {
+                flex-direction: column; /* Tumpuk nomor soal dan timer atas bawah */
+                align-items: flex-start;
+            }
+
+            .timer {
+                width: 100%; /* Timer membentang penuh */
+                justify-content: center;
+                box-sizing: border-box;
+            }
+
+            .question-text {
+                font-size: 1rem; /* Sedikit perkecil ukuran teks soal */
+            }
+
+            .option-btn {
+                padding: 12px; /* Perkecil padding pilihan ganda */
+                font-size: 0.95rem;
+            }
+
+            .next-btn {
+                width: 100%; /* Tombol next membentang penuh agar mudah diklik jempol */
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -208,7 +241,7 @@
     </div>
 
     <script>
-        // Data Soal. Perhatikan double backslash (\\) digunakan untuk escape karakter LaTeX di dalam string JavaScript
+        // Data Soal dengan format MathJax ganda backslash (\\) agar render sempurna
         const quizData = [
             {
                 question: "<strong>Soal 1 (Pecahan Pola Teleskopik)</strong><br><br>Jika diketahui:<br> $(1-\\frac{3}{4})(1-\\frac{3}{7})(1-\\frac{3}{10})...(1-\\frac{3}{3004})=...$",
@@ -265,7 +298,7 @@
         let currentQuestion = 0;
         let score = 0;
         let selectedOption = null;
-        let timeLeft = 300; // 5 Menit (dalam detik)
+        let timeLeft = 300; 
         let timerInterval;
 
         const questionText = document.getElementById('question-text');
@@ -276,7 +309,7 @@
 
         function startTimer() {
             clearInterval(timerInterval);
-            timeLeft = 300; // Reset ke 5 menit
+            timeLeft = 300; 
             updateTimerDisplay();
 
             timerInterval = setInterval(() => {
@@ -285,7 +318,6 @@
 
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
-                    // Waktu habis, otomatis lanjut ke soal berikutnya tanpa memilih
                     nextQuestion(); 
                 }
             }, 1000);
@@ -296,7 +328,6 @@
             let seconds = timeLeft % 60;
             timeDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             
-            // Ubah warna timer jadi lebih merah saat sisa waktu < 30 detik
             if(timeLeft < 30) {
                 document.getElementById('timer-display').style.background = '#f87171';
                 document.getElementById('timer-display').style.color = '#ffffff';
@@ -321,35 +352,30 @@
             q.options.forEach((opt, index) => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
-                btn.innerHTML = `<strong>${labels[index]}.</strong> &nbsp; ${opt}`;
+                btn.innerHTML = `<strong style="min-width: 25px;">${labels[index]}.</strong> <span>${opt}</span>`;
                 btn.onclick = () => selectOption(btn, index);
                 optionsContainer.appendChild(btn);
             });
 
-            // Mulai ulang timer untuk soal ini
             startTimer();
 
-            // Memicu MathJax untuk merender ulang persamaan di soal dan opsi jawaban baru
             if (window.MathJax) {
                 MathJax.typesetPromise([questionText, optionsContainer]).catch((err) => console.log('MathJax error: ', err));
             }
         }
 
         function selectOption(btn, index) {
-            // Hapus seleksi sebelumnya
             const buttons = optionsContainer.querySelectorAll('.option-btn');
             buttons.forEach(b => b.classList.remove('selected'));
             
-            // Tambahkan seleksi baru
             btn.classList.add('selected');
             selectedOption = index;
             nextBtn.disabled = false;
         }
 
         function nextQuestion() {
-            // Cek jawaban
             if (selectedOption !== null && selectedOption === quizData[currentQuestion].correct) {
-                score += 10; // 10 poin per soal benar (total max 100)
+                score += 10; 
             }
 
             currentQuestion++;
@@ -368,7 +394,6 @@
             document.getElementById('final-score').textContent = score;
         }
 
-        // Mulai kuis
         loadQuestion();
     </script>
 </body>
