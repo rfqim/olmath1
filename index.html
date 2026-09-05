@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Matematika Interaktif</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .quiz-container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 600px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .timer {
+            font-size: 1.2em;
+            color: #d9534f;
+            font-weight: bold;
+        }
+        .question-text {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        .option-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            text-align: left;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        .option-btn:hover {
+            background-color: #e2e6ea;
+        }
+        .score-container {
+            text-align: center;
+            display: none;
+        }
+        .score-text {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .restart-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .restart-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container" id="quiz">
+    <div class="header">
+        <h2 id="question-number">Soal 1</h2>
+        <div class="timer" id="timer">05:00</div>
+    </div>
+    <div id="question-text" class="question-text">Teks soal akan muncul di sini...</div>
+    <div id="options-container">
+        <!-- Tombol pilihan ganda akan di-generate oleh JavaScript -->
+    </div>
+</div>
+
+<div class="quiz-container score-container" id="score-container">
+    <div class="score-text" id="score-text">Skor Anda: 0 / 0</div>
+    <button class="restart-btn" onclick="restartQuiz()">Ulangi Kuis</button>
+</div>
+
+<script>
+    // MASUKKAN SOAL-SOAL DARI JAWABAN SEBELUMNYA KE DALAM ARRAY INI
+    const quizData = [
+        {
+            question: "Jika diketahui: (1-3/4)(1-3/7)...(1-3/3004)=...",
+            options: ["1/3004", "2/3004", "3/3004", "4/3004", "5/3004"],
+            correctAnswer: 0 // Index jawaban benar (0 = A, 1 = B, dst)
+        },
+        {
+            question: "Diketahui f(x) adalah polinom berderajat dua yang memenuhi f(x+1)-f(x)=4x+5. Jika f(1)=10 maka f(2)=...",
+            options: ["17", "19", "21", "23", "25"],
+            correctAnswer: 1 
+        }
+        // Tambahkan soal 3 hingga 10 di sini mengikuti format di atas...
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let timeLeft = 300; // 5 menit = 300 detik
+    let timerInterval;
+
+    const questionNumberEl = document.getElementById("question-number");
+    const questionTextEl = document.getElementById("question-text");
+    const optionsContainer = document.getElementById("options-container");
+    const timerEl = document.getElementById("timer");
+    const quizEl = document.getElementById("quiz");
+    const scoreContainerEl = document.getElementById("score-container");
+    const scoreTextEl = document.getElementById("score-text");
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        quizEl.style.display = "block";
+        scoreContainerEl.style.display = "none";
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        clearInterval(timerInterval);
+        timeLeft = 300; // Reset timer ke 5 menit untuk soal baru
+        updateTimerDisplay();
+        timerInterval = setInterval(handleTimer, 1000);
+
+        const currentQuizData = quizData[currentQuestionIndex];
+        questionNumberEl.innerText = `Soal ${currentQuestionIndex + 1} dari ${quizData.length}`;
+        questionTextEl.innerText = currentQuizData.question;
+        
+        optionsContainer.innerHTML = "";
+        currentQuizData.options.forEach((option, index) => {
+            const button = document.createElement("button");
+            button.innerText = option;
+            button.classList.add("option-btn");
+            button.onclick = () => selectAnswer(index);
+            optionsContainer.appendChild(button);
+        });
+    }
+
+    function handleTimer() {
+        timeLeft--;
+        updateTimerDisplay();
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            moveToNextQuestion(); // Otomatis lanjut jika waktu habis
+        }
+    }
+
+    function updateTimerDisplay() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        timerEl.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    function selectAnswer(selectedIndex) {
+        clearInterval(timerInterval);
+        const currentQuizData = quizData[currentQuestionIndex];
+        if (selectedIndex === currentQuizData.correctAnswer) {
+            score++;
+        }
+        moveToNextQuestion();
+    }
+
+    function moveToNextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
+            loadQuestion();
+        } else {
+            showScore();
+        }
+    }
+
+    function showScore() {
+        quizEl.style.display = "none";
+        scoreContainerEl.style.display = "block";
+        scoreTextEl.innerText = `Skor Anda: ${score} / ${quizData.length}`;
+    }
+
+    function restartQuiz() {
+        startQuiz();
+    }
+
+    // Mulai kuis saat halaman dimuat
+    startQuiz();
+</script>
+
+</body>
+</html>
