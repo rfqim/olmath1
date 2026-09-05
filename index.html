@@ -4,199 +4,372 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kuis Matematika Interaktif</title>
+    
+    <!-- Google Fonts untuk desain profesional -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Konfigurasi dan Script MathJax untuk merender LaTeX -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady();
+                }
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
     <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --danger: #ef4444;
+            --success: #10b981;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f7f6;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            min-height: 100vh;
         }
+
         .quiz-container {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            padding: 30px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
             width: 100%;
-            max-width: 600px;
+            max-width: 700px;
+            padding: 40px;
+            box-sizing: border-box;
         }
+
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border);
         }
+
+        .question-number {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
         .timer {
-            font-size: 1.2em;
-            color: #d9534f;
-            font-weight: bold;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--danger);
+            background: #fee2e2;
+            padding: 6px 12px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
+
         .question-text {
-            font-size: 1.2em;
-            margin-bottom: 20px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 24px;
         }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
         .option-btn {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            background-color: #f8f9fa;
-            border: 1px solid #ced4da;
-            border-radius: 5px;
-            text-align: left;
+            background-color: var(--card-bg);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            font-size: 1rem;
+            font-family: inherit;
+            color: var(--text-main);
             cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.3s;
+            text-align: left;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
         }
+
         .option-btn:hover {
-            background-color: #e2e6ea;
+            border-color: var(--primary);
+            background-color: #eff6ff;
         }
-        .score-container {
+
+        .option-btn.selected {
+            border-color: var(--primary);
+            background-color: #dbeafe;
+            font-weight: 500;
+        }
+
+        .controls {
+            margin-top: 32px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .next-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .next-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .next-btn:disabled {
+            background-color: #93c5fd;
+            cursor: not-allowed;
+        }
+
+        .result-container {
             text-align: center;
             display: none;
         }
-        .score-text {
-            font-size: 1.5em;
-            font-weight: bold;
-            margin-bottom: 20px;
+
+        .result-score {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 20px 0;
         }
-        .restart-btn {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-        }
-        .restart-btn:hover {
-            background-color: #0056b3;
+
+        /* Screen reader only for MathJax accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
         }
     </style>
 </head>
 <body>
 
-<div class="quiz-container" id="quiz">
-    <div class="header">
-        <h2 id="question-number">Soal 1</h2>
-        <div class="timer" id="timer">05:00</div>
+    <div class="quiz-container" id="quiz-box">
+        <div class="header">
+            <div class="question-number" id="question-tracker">Soal 1 / 10</div>
+            <div class="timer" id="timer-display">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span id="time">05:00</span>
+            </div>
+        </div>
+
+        <div class="question-text" id="question-text">
+            <!-- Pertanyaan akan dirender di sini -->
+        </div>
+
+        <div class="options-container" id="options-container">
+            <!-- Pilihan jawaban akan dirender di sini -->
+        </div>
+
+        <div class="controls">
+            <button class="next-btn" id="next-btn" disabled onclick="nextQuestion()">Selanjutnya</button>
+        </div>
     </div>
-    <div id="question-text" class="question-text">Teks soal akan muncul di sini...</div>
-    <div id="options-container">
-        <!-- Tombol pilihan ganda akan di-generate oleh JavaScript -->
+
+    <div class="quiz-container result-container" id="result-box">
+        <h2>Kuis Selesai!</h2>
+        <p>Terima kasih telah mengerjakan latihan soal ini.</p>
+        <div class="result-score">Nilai: <span id="final-score">0</span>/100</div>
+        <button class="next-btn" onclick="location.reload()">Mulai Ulang Kuis</button>
     </div>
-</div>
 
-<div class="quiz-container score-container" id="score-container">
-    <div class="score-text" id="score-text">Skor Anda: 0 / 0</div>
-    <button class="restart-btn" onclick="restartQuiz()">Ulangi Kuis</button>
-</div>
+    <script>
+        // Data Soal. Perhatikan double backslash (\\) digunakan untuk escape karakter LaTeX di dalam string JavaScript
+        const quizData = [
+            {
+                question: "<strong>Soal 1 (Pecahan Pola Teleskopik)</strong><br><br>Jika diketahui:<br> $(1-\\\\frac{3}{4})(1-\\\\frac{3}{7})(1-\\\\frac{3}{10})...(1-\\\\frac{3}{3004})=...$",
+                options: ["$\\\\frac{1}{3004}$", "$\\\\frac{2}{3004}$", "$\\\\frac{3}{3004}$", "$\\\\frac{4}{3004}$", "$\\\\frac{5}{3004}$"],
+                correct: 0
+            },
+            {
+                question: "<strong>Soal 2 (Polinomial Berderajat Dua)</strong><br><br>Diketahui $f(x)$ adalah polinom berderajat dua yang memenuhi $f(x+1)-f(x)=4x+5$.<br>Jika $f(1)=10$ maka $f(2)=...$",
+                options: ["17", "19", "21", "23", "25"],
+                correct: 1
+            },
+            {
+                question: "<strong>Soal 3 (Aljabar Sifat Simetri)</strong><br><br>Jika $p+q+r=0$ maka nilai dari $\\\\frac{(p+q)(q+r)(r+p)}{pqr}=...$",
+                options: ["-3", "-1", "0", "1", "3"],
+                correct: 1
+            },
+            {
+                question: "<strong>Soal 4 (Perbandingan Senilai)</strong><br><br>Bila $\\\\frac{a}{2}=\\\\frac{b}{5}=\\\\frac{c}{6}$ maka $\\\\frac{a+b+c}{c}=...$",
+                options: ["$\\\\frac{13}{6}$", "$\\\\frac{7}{3}$", "$\\\\frac{5}{2}$", "3", "4"],
+                correct: 0
+            },
+            {
+                question: "<strong>Soal 5 (Jumlah Parsial Bilangan Bulat Bergantian)</strong><br><br>Jika $S_{n}=1-2+3-4+\\\\cdot\\\\cdot\\\\cdot+n(-1)^{n-1}$ untuk $n=1,2,3,...,$ maka nilai $S_{15}+S_{25}+S_{40}=...$",
+                options: ["-1", "0", "1", "2", "3"],
+                correct: 2
+            },
+            {
+                question: "<strong>Soal 6 (Sudut dalam Segitiga / Geometri)</strong><br><br>Perhatikan gambar bentuk bumerang/dua segitiga bertumpuk. Jika sudut siku-siku dalam atau sudut bawah membentuk sudut $70^{\\\\circ}$, dan sudut-sudut atas membentuk $x, y, z$, berapakah nilai $x+y+z$ jika sudut tengahnya adalah $70^{\\\\circ}$?",
+                options: ["$70^{\\\\circ}$", "$80^{\\\\circ}$", "$90^{\\\\circ}$", "$100^{\\\\circ}$", "$110^{\\\\circ}$"],
+                correct: 0
+            },
+            {
+                question: "<strong>Soal 7 (Barisan Indeks Perkalian)</strong><br><br>Diketahui $x_{2}=\\\\frac{2}{x_{1}}$, $x_{3}=\\\\frac{3}{x_{2}}$, $x_{4}=\\\\frac{4}{x_{3}},...,x_{6}=\\\\frac{6}{x_{5}}$.<br>Nilai dari $x_1 x_2 x_3 x_4 x_5 x_6 = ...$",
+                options: ["24", "48", "72", "120", "720"],
+                correct: 1
+            },
+            {
+                question: "<strong>Soal 8 (Fungsi Rekursif)</strong><br><br>Jika untuk $n=1,2,3,...$ dan $F(1)=3$, serta $F(n+1)=\\\\frac{2F(n)+1}{2}$, maka nilai $F(51)=...$",
+                options: ["25", "26", "27", "28", "29"],
+                correct: 3
+            },
+            {
+                question: "<strong>Soal 9 (Representasi Perpangkatan Dua)</strong><br><br>Jika $a_{1},a_{2},a_{3},...,a_{n}$ adalah bilangan-bilangan cacah berlainan yang memenuhi: $2^{a_{1}}+2^{a_{2}}+2^{a_{3}}+\\\\cdot\\\\cdot\\\\cdot+2^{a_{n}}=1000$<br>Maka nilai dari $a_{1}+a_{2}+a_{3}+\\\\cdot\\\\cdot\\\\cdot+a_{n}=...$",
+                options: ["35", "36", "37", "38", "39"],
+                correct: 3
+            },
+            {
+                question: "<strong>Soal 10 (Koefisien Variabel Penjabaran Aljabar)</strong><br><br>Jika bentuk $(1+x)(1-2x)(1+3x)(1-4x)...(1+101x)$ dijabarkan, maka diperoleh koefisien $x=...$",
+                options: ["-50", "-51", "50", "51", "101"],
+                correct: 3
+            }
+        ];
 
-<script>
-    // MASUKKAN SOAL-SOAL DARI JAWABAN SEBELUMNYA KE DALAM ARRAY INI
-    const quizData = [
-        {
-            question: "Jika diketahui: (1-3/4)(1-3/7)...(1-3/3004)=...",
-            options: ["1/3004", "2/3004", "3/3004", "4/3004", "5/3004"],
-            correctAnswer: 0 // Index jawaban benar (0 = A, 1 = B, dst)
-        },
-        {
-            question: "Diketahui f(x) adalah polinom berderajat dua yang memenuhi f(x+1)-f(x)=4x+5. Jika f(1)=10 maka f(2)=...",
-            options: ["17", "19", "21", "23", "25"],
-            correctAnswer: 1 
-        }
-        // Tambahkan soal 3 hingga 10 di sini mengikuti format di atas...
-    ];
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedOption = null;
+        let timeLeft = 300; // 5 Menit (dalam detik)
+        let timerInterval;
 
-    let currentQuestionIndex = 0;
-    let score = 0;
-    let timeLeft = 300; // 5 menit = 300 detik
-    let timerInterval;
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const nextBtn = document.getElementById('next-btn');
+        const tracker = document.getElementById('question-tracker');
+        const timeDisplay = document.getElementById('time');
 
-    const questionNumberEl = document.getElementById("question-number");
-    const questionTextEl = document.getElementById("question-text");
-    const optionsContainer = document.getElementById("options-container");
-    const timerEl = document.getElementById("timer");
-    const quizEl = document.getElementById("quiz");
-    const scoreContainerEl = document.getElementById("score-container");
-    const scoreTextEl = document.getElementById("score-text");
-
-    function startQuiz() {
-        currentQuestionIndex = 0;
-        score = 0;
-        quizEl.style.display = "block";
-        scoreContainerEl.style.display = "none";
-        loadQuestion();
-    }
-
-    function loadQuestion() {
-        clearInterval(timerInterval);
-        timeLeft = 300; // Reset timer ke 5 menit untuk soal baru
-        updateTimerDisplay();
-        timerInterval = setInterval(handleTimer, 1000);
-
-        const currentQuizData = quizData[currentQuestionIndex];
-        questionNumberEl.innerText = `Soal ${currentQuestionIndex + 1} dari ${quizData.length}`;
-        questionTextEl.innerText = currentQuizData.question;
-        
-        optionsContainer.innerHTML = "";
-        currentQuizData.options.forEach((option, index) => {
-            const button = document.createElement("button");
-            button.innerText = option;
-            button.classList.add("option-btn");
-            button.onclick = () => selectAnswer(index);
-            optionsContainer.appendChild(button);
-        });
-    }
-
-    function handleTimer() {
-        timeLeft--;
-        updateTimerDisplay();
-        if (timeLeft <= 0) {
+        function startTimer() {
             clearInterval(timerInterval);
-            moveToNextQuestion(); // Otomatis lanjut jika waktu habis
+            timeLeft = 300; // Reset ke 5 menit
+            updateTimerDisplay();
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    // Waktu habis, otomatis lanjut ke soal berikutnya tanpa memilih
+                    nextQuestion(); 
+                }
+            }, 1000);
         }
-    }
 
-    function updateTimerDisplay() {
-        const minutes = Math.floor(timeLeft / 60);
-        const seconds = timeLeft % 60;
-        timerEl.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    }
-
-    function selectAnswer(selectedIndex) {
-        clearInterval(timerInterval);
-        const currentQuizData = quizData[currentQuestionIndex];
-        if (selectedIndex === currentQuizData.correctAnswer) {
-            score++;
+        function updateTimerDisplay() {
+            let minutes = Math.floor(timeLeft / 60);
+            let seconds = timeLeft % 60;
+            timeDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Ubah warna timer jadi lebih merah saat sisa waktu < 30 detik
+            if(timeLeft < 30) {
+                document.getElementById('timer-display').style.background = '#f87171';
+                document.getElementById('timer-display').style.color = '#ffffff';
+            } else {
+                document.getElementById('timer-display').style.background = '#fee2e2';
+                document.getElementById('timer-display').style.color = 'var(--danger)';
+            }
         }
-        moveToNextQuestion();
-    }
 
-    function moveToNextQuestion() {
-        currentQuestionIndex++;
-        if (currentQuestionIndex < quizData.length) {
-            loadQuestion();
-        } else {
-            showScore();
+        function loadQuestion() {
+            selectedOption = null;
+            nextBtn.disabled = true;
+            
+            const q = quizData[currentQuestion];
+            tracker.textContent = `Soal ${currentQuestion + 1} / ${quizData.length}`;
+            questionText.innerHTML = q.question;
+            
+            optionsContainer.innerHTML = '';
+            
+            const labels = ['A', 'B', 'C', 'D', 'E'];
+            
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = `<strong>${labels[index]}.</strong> &nbsp; ${opt}`;
+                btn.onclick = () => selectOption(btn, index);
+                optionsContainer.appendChild(btn);
+            });
+
+            // Mulai ulang timer untuk soal ini
+            startTimer();
+
+            // Memicu MathJax untuk merender ulang persamaan di soal dan opsi jawaban baru
+            if (window.MathJax) {
+                MathJax.typesetPromise([questionText, optionsContainer]).catch((err) => console.log('MathJax error: ', err));
+            }
         }
-    }
 
-    function showScore() {
-        quizEl.style.display = "none";
-        scoreContainerEl.style.display = "block";
-        scoreTextEl.innerText = `Skor Anda: ${score} / ${quizData.length}`;
-    }
+        function selectOption(btn, index) {
+            // Hapus seleksi sebelumnya
+            const buttons = optionsContainer.querySelectorAll('.option-btn');
+            buttons.forEach(b => b.classList.remove('selected'));
+            
+            // Tambahkan seleksi baru
+            btn.classList.add('selected');
+            selectedOption = index;
+            nextBtn.disabled = false;
+        }
 
-    function restartQuiz() {
-        startQuiz();
-    }
+        function nextQuestion() {
+            // Cek jawaban
+            if (selectedOption !== null && selectedOption === quizData[currentQuestion].correct) {
+                score += 10; // 10 poin per soal benar (total max 100)
+            }
 
-    // Mulai kuis saat halaman dimuat
-    startQuiz();
-</script>
+            currentQuestion++;
 
+            if (currentQuestion < quizData.length) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            clearInterval(timerInterval);
+            document.getElementById('quiz-box').style.display = 'none';
+            document.getElementById('result-box').style.display = 'block';
+            document.getElementById('final-score').textContent = score;
+        }
+
+        // Mulai kuis
+        loadQuestion();
+    </script>
 </body>
 </html>
