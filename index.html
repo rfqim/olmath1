@@ -211,8 +211,8 @@
         // Data Soal. Perhatikan double backslash (\\) digunakan untuk escape karakter LaTeX di dalam string JavaScript
         const quizData = [
             {
-                question: "<strong>Soal 1 (Pecahan Pola Teleskopik)</strong><br><br>Jika diketahui:<br> $(1-\\\\frac{3}{4})(1-\\\\frac{3}{7})(1-\\\\frac{3}{10})...(1-\\\\frac{3}{3004})=...$",
-                options: ["$\\\\frac{1}{3004}$", "$\\\\frac{2}{3004}$", "$\\\\frac{3}{3004}$", "$\\\\frac{4}{3004}$", "$\\\\frac{5}{3004}$"],
+                question: "<strong>Soal 1 (Pecahan Pola Teleskopik)</strong><br><br>Jika diketahui:<br> $(1-\\frac{3}{4})(1-\\frac{3}{7})(1-\\frac{3}{10})...(1-\\frac{3}{3004})=...$",
+                options: ["$\\frac{1}{3004}$", "$\\frac{2}{3004}$", "$\\frac{3}{3004}$", "$\\frac{4}{3004}$", "$\\frac{5}{3004}$"],
                 correct: 0
             },
             {
@@ -221,37 +221,37 @@
                 correct: 1
             },
             {
-                question: "<strong>Soal 3 (Aljabar Sifat Simetri)</strong><br><br>Jika $p+q+r=0$ maka nilai dari $\\\\frac{(p+q)(q+r)(r+p)}{pqr}=...$",
+                question: "<strong>Soal 3 (Aljabar Sifat Simetri)</strong><br><br>Jika $p+q+r=0$ maka nilai dari $\\frac{(p+q)(q+r)(r+p)}{pqr}=...$",
                 options: ["-3", "-1", "0", "1", "3"],
                 correct: 1
             },
             {
-                question: "<strong>Soal 4 (Perbandingan Senilai)</strong><br><br>Bila $\\\\frac{a}{2}=\\\\frac{b}{5}=\\\\frac{c}{6}$ maka $\\\\frac{a+b+c}{c}=...$",
-                options: ["$\\\\frac{13}{6}$", "$\\\\frac{7}{3}$", "$\\\\frac{5}{2}$", "3", "4"],
+                question: "<strong>Soal 4 (Perbandingan Senilai)</strong><br><br>Bila $\\frac{a}{2}=\\frac{b}{5}=\\frac{c}{6}$ maka $\\frac{a+b+c}{c}=...$",
+                options: ["$\\frac{13}{6}$", "$\\frac{7}{3}$", "$\\frac{5}{2}$", "3", "4"],
                 correct: 0
             },
             {
-                question: "<strong>Soal 5 (Jumlah Parsial Bilangan Bulat Bergantian)</strong><br><br>Jika $S_{n}=1-2+3-4+\\\\cdot\\\\cdot\\\\cdot+n(-1)^{n-1}$ untuk $n=1,2,3,...,$ maka nilai $S_{15}+S_{25}+S_{40}=...$",
+                question: "<strong>Soal 5 (Jumlah Parsial Bilangan Bulat Bergantian)</strong><br><br>Jika $S_{n}=1-2+3-4+\\cdot\\cdot\\cdot+n(-1)^{n-1}$ untuk $n=1,2,3,...,$ maka nilai $S_{15}+S_{25}+S_{40}=...$",
                 options: ["-1", "0", "1", "2", "3"],
                 correct: 2
             },
             {
-                question: "<strong>Soal 6 (Sudut dalam Segitiga / Geometri)</strong><br><br>Perhatikan gambar bentuk bumerang/dua segitiga bertumpuk. Jika sudut siku-siku dalam atau sudut bawah membentuk sudut $70^{\\\\circ}$, dan sudut-sudut atas membentuk $x, y, z$, berapakah nilai $x+y+z$ jika sudut tengahnya adalah $70^{\\\\circ}$?",
-                options: ["$70^{\\\\circ}$", "$80^{\\\\circ}$", "$90^{\\\\circ}$", "$100^{\\\\circ}$", "$110^{\\\\circ}$"],
+                question: "<strong>Soal 6 (Sudut dalam Segitiga / Geometri)</strong><br><br>Perhatikan gambar bentuk bumerang/dua segitiga bertumpuk. Jika sudut siku-siku dalam atau sudut bawah membentuk sudut $70^{\\circ}$, dan sudut-sudut atas membentuk $x, y, z$, berapakah nilai $x+y+z$ jika sudut tengahnya adalah $70^{\\circ}$?",
+                options: ["$70^{\\circ}$", "$80^{\\circ}$", "$90^{\\circ}$", "$100^{\\circ}$", "$110^{\\circ}$"],
                 correct: 0
             },
             {
-                question: "<strong>Soal 7 (Barisan Indeks Perkalian)</strong><br><br>Diketahui $x_{2}=\\\\frac{2}{x_{1}}$, $x_{3}=\\\\frac{3}{x_{2}}$, $x_{4}=\\\\frac{4}{x_{3}},...,x_{6}=\\\\frac{6}{x_{5}}$.<br>Nilai dari $x_1 x_2 x_3 x_4 x_5 x_6 = ...$",
+                question: "<strong>Soal 7 (Barisan Indeks Perkalian)</strong><br><br>Diketahui $x_{2}=\\frac{2}{x_{1}}$, $x_{3}=\\frac{3}{x_{2}}$, $x_{4}=\\frac{4}{x_{3}},...,x_{6}=\\frac{6}{x_{5}}$.<br>Nilai dari $x_1 x_2 x_3 x_4 x_5 x_6 = ...$",
                 options: ["24", "48", "72", "120", "720"],
                 correct: 1
             },
             {
-                question: "<strong>Soal 8 (Fungsi Rekursif)</strong><br><br>Jika untuk $n=1,2,3,...$ dan $F(1)=3$, serta $F(n+1)=\\\\frac{2F(n)+1}{2}$, maka nilai $F(51)=...$",
+                question: "<strong>Soal 8 (Fungsi Rekursif)</strong><br><br>Jika untuk $n=1,2,3,...$ dan $F(1)=3$, serta $F(n+1)=\\frac{2F(n)+1}{2}$, maka nilai $F(51)=...$",
                 options: ["25", "26", "27", "28", "29"],
                 correct: 3
             },
             {
-                question: "<strong>Soal 9 (Representasi Perpangkatan Dua)</strong><br><br>Jika $a_{1},a_{2},a_{3},...,a_{n}$ adalah bilangan-bilangan cacah berlainan yang memenuhi: $2^{a_{1}}+2^{a_{2}}+2^{a_{3}}+\\\\cdot\\\\cdot\\\\cdot+2^{a_{n}}=1000$<br>Maka nilai dari $a_{1}+a_{2}+a_{3}+\\\\cdot\\\\cdot\\\\cdot+a_{n}=...$",
+                question: "<strong>Soal 9 (Representasi Perpangkatan Dua)</strong><br><br>Jika $a_{1},a_{2},a_{3},...,a_{n}$ adalah bilangan-bilangan cacah berlainan yang memenuhi: $2^{a_{1}}+2^{a_{2}}+2^{a_{3}}+\\cdot\\cdot\\cdot+2^{a_{n}}=1000$<br>Maka nilai dari $a_{1}+a_{2}+a_{3}+\\cdot\\cdot\\cdot+a_{n}=...$",
                 options: ["35", "36", "37", "38", "39"],
                 correct: 3
             },
